@@ -1,12 +1,16 @@
 package com.jwtTokenPermissionAuth.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.jwtTokenPermissionAuth.dto.UserRequest;
+import com.jwtTokenPermissionAuth.entity.Role;
 import com.jwtTokenPermissionAuth.entity.User;
+import com.jwtTokenPermissionAuth.repository.RoleRepository;
 import com.jwtTokenPermissionAuth.repository.UserRepository;
 import com.jwtTokenPermissionAuth.service.UserService;
 
@@ -19,6 +23,8 @@ public class UserServiceImpl implements UserService{
 	private final UserRepository userRepo;
 	
 	private final ModelMapper modelMapper;
+	
+	private final RoleRepository roleRepo;
 	
 	
 
@@ -45,8 +51,22 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserRequest addUserDetail(UserRequest userRequest) {
+		
+		System.out.println(userRequest);
 		User user = modelMapper.map(userRequest, User.class);
-		if(userRepo.save(user) != null) {
+		
+		System.out.println("USER: " + user);
+
+		List<Role> roles = new ArrayList<>();
+		Role role = roleRepo.findById(2).orElseThrow();
+		
+		roles.add(role);
+		user.setRoles(roles);
+		User save = userRepo.save(user);
+		
+		if( save != null) {
+			System.out.println(user);
+			
 			return userRequest;
 		}
 		return null;

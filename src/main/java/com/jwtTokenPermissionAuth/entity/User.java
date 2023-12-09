@@ -2,6 +2,8 @@ package com.jwtTokenPermissionAuth.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +26,8 @@ public class User {
 	private String username;
 	private String password;
 	
-	@ManyToMany(cascade = CascadeType.MERGE , mappedBy = "users")
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JsonBackReference
 	private List<Role> roles;
 	
 
