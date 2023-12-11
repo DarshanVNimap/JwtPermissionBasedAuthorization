@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ public class Role {
 	private Integer id;
 	private String role;
 	
-	@ManyToMany(cascade =CascadeType.ALL , mappedBy = "roles")
+	@ManyToMany(cascade =CascadeType.ALL , fetch = FetchType.EAGER , mappedBy = "roles")
 	@JsonManagedReference
 	private List<User> users;
 	

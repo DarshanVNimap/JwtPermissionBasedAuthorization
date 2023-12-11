@@ -1,44 +1,46 @@
 package com.jwtTokenPermissionAuth.config.securityConfig;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.jwtTokenPermissionAuth.entity.User;
-import com.jwtTokenPermissionAuth.repository.RolePermissionMapperRepository;
+
 
 public class CustomeUserDetails implements UserDetails {
-
-	private User user;
-
-	@Autowired
-	private RolePermissionMapperRepository mapperRepo;
-
-	public CustomeUserDetails(User user) {
-		super();
+	
+	private final User user;
+	
+	private List<String> perission;
+	
+	
+	public CustomeUserDetails(User user){
 		this.user = user;
 	}
-
-	private List<SimpleGrantedAuthority> getRolesAndPermissions(User user) {
+	
+	
+	public CustomeUserDetails(User user2, List<String> permissions) {
 		
-		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-				.map(roles -> new SimpleGrantedAuthority(roles.getRole())
-				)
-				.collect(Collectors.toList());
-		
-		
-
-		return authorities;
+		this.user = user2;
+		this.perission = permissions;
+	
+	
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return getRolesAndPermissions(user);
+		
+			List<SimpleGrantedAuthority> autherties=new ArrayList<>();
+			
+			perission.stream()
+		    .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission))
+		    .forEach(autherties::add);	  
+		
+		return autherties;
 	}
 
 	@Override
