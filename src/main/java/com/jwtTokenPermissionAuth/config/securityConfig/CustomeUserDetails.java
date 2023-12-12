@@ -2,20 +2,27 @@ package com.jwtTokenPermissionAuth.config.securityConfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.jwtTokenPermissionAuth.entity.Role;
+import com.jwtTokenPermissionAuth.entity.RolePermissionMapper;
 import com.jwtTokenPermissionAuth.entity.User;
+import com.jwtTokenPermissionAuth.repository.RolePermissionMapperRepository;
 
 
 public class CustomeUserDetails implements UserDetails {
 	
 	private final User user;
 	
-	private List<String> perission;
+	private RolePermissionMapperRepository repo;
+	
+//	private List<String> perission;
 	
 	
 	public CustomeUserDetails(User user){
@@ -23,24 +30,38 @@ public class CustomeUserDetails implements UserDetails {
 	}
 	
 	
-	public CustomeUserDetails(User user2, List<String> permissions) {
+	public CustomeUserDetails(User user, RolePermissionMapperRepository repo) {
+	this.user = user;
+	this.repo = repo;
+}
+
+
+
+
+
+	private List<SimpleGrantedAuthority> getPermission(User user){
 		
-		this.user = user2;
-		this.perission = permissions;
-	
-	
+		Set<SimpleGrantedAuthority> authorities1 = new HashSet<>();
+		
+		for(Role role : user.getRoles()) {
+			authorities1.add(new SimpleGrantedAuthority("ROLE_"+role.getRole()));
+			for(RolePermissionMapper map : repo.findByRole(role)) {
+				authorities1.add(new SimpleGrantedAuthority(map.getPermission().getAction()));
+				
+				System.out.println(map.getPermission().getAction());
+			}
+		}
+		
+		 List<SimpleGrantedAuthority> auth = new ArrayList<>(authorities1);
+
+		
+		return auth;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-			List<SimpleGrantedAuthority> autherties=new ArrayList<>();
-			
-			perission.stream()
-		    .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission))
-		    .forEach(autherties::add);	  
-		
-		return autherties;
+		return getPermission(user);
 	}
 
 	@Override

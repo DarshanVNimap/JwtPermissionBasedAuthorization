@@ -1,11 +1,15 @@
 package com.jwtTokenPermissionAuth.service;
 
+import com.jwtTokenPermissionAuth.dto.RefreshTokenRequest;
+import com.jwtTokenPermissionAuth.dto.TokenResopnse;
 import com.jwtTokenPermissionAuth.dto.UserRequest;
 
 public interface AuthenticateService {
 	
-	public String  registerUser(UserRequest request) ;
+	public TokenResopnse  registerUser(UserRequest request) ;
 	
-	public String loginUser(UserRequest request) throws Exception;
+	public TokenResopnse loginUser(UserRequest request) throws Exception;
+	
+	public TokenResopnse refresh(RefreshTokenRequest token) throws Exception;
 
 }

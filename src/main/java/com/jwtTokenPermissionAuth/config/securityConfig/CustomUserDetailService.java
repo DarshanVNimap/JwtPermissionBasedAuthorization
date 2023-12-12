@@ -1,7 +1,5 @@
 package com.jwtTokenPermissionAuth.config.securityConfig;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,12 +22,12 @@ public class CustomUserDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 			User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found!!"));
 			
-			List<String> permissions = user.getRoles().stream()
-			        .flatMap(role -> mapperRepo.findByRole(role).stream().map(r -> r.getPermission().getAction()))
-			        .toList();
+//			List<String> permissions = user.getRoles().stream()
+//			        .flatMap(role -> mapperRepo.findByRole(role).stream().map(r -> r.getPermission().getAction()))
+//			        .toList();
 			
 			
-		return new CustomeUserDetails(user,permissions);
+		return new CustomeUserDetails(user , mapperRepo);
 	}
 
 

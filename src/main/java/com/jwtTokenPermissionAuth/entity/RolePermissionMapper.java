@@ -27,7 +27,7 @@ public class RolePermissionMapper {
 	@JsonBackReference
 	private Role role;
 	
-	@ManyToOne(cascade = CascadeType.MERGE,fetch =FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE,fetch =FetchType.EAGER)
 	@JsonBackReference
 	private Permission permission;
 
